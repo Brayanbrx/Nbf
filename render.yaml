@@ -13,7 +13,7 @@ services:
       - key: SECRET_KEY
         generateValue: true
       - key: DB_DRIVER
-        value: "ODBC Driver 17 for SQL Server"
+        value: "FreeTDS"
       - key: DB_PORT
         value: "1433"
 

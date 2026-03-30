@@ -1,23 +1,18 @@
 FROM python:3.12-slim
 
-# Instalar dependencias del sistema para SQL Server
+# Instalar dependencias del sistema para SQL Server con FreeTDS
 RUN apt-get update && apt-get install -y \
-    curl \
-    gnupg2 \
+    freetds-dev \
     unixodbc-dev \
-    apt-transport-https \
-    ca-certificates \
+    unixodbc \
+    --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
-# Añadir repositorio de Microsoft (método moderno para Debian 13)
-RUN mkdir -p /etc/apt/trusted.gpg.d && \
-    curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > /etc/apt/trusted.gpg.d/microsoft.gpg && \
-    curl https://packages.microsoft.com/config/debian/12/prod.list > /etc/apt/sources.list.d/mssql-release.list
-
-# Instalar ODBC driver para SQL Server
-RUN apt-get update && ACCEPT_EULA=Y apt-get install -y \
-    msodbcsql18 \
-    && rm -rf /var/lib/apt/lists/*
+# Configurar ODBC para FreeTDS
+RUN echo "[FreeTDS]\n\
+Description = FreeTDS Driver\n\
+Driver = /usr/lib/x86_64-linux-gnu/odbc/libtdsodbc.so\n\
+Setup = /usr/lib/x86_64-linux-gnu/odbc/libtdsS.so" > /etc/odbcinst.ini
 
 # Configurar directorio de trabajo
 WORKDIR /app
