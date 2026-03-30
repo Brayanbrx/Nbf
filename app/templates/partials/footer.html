@@ -1,0 +1,28 @@
+<footer class="bg-dark text-white mt-5 py-4 mt-auto">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-3 mb-md-0">
+                <h5><i class="bi bi-shop"></i> NBF Listados</h5>
+                <p class="text-muted small">Catálogo de productos con administración integrada.</p>
+            </div>
+            <div class="col-md-4 mb-3 mb-md-0">
+                <h6>Enlaces Útiles</h6>
+                <ul class="list-unstyled small">
+                    <li><a href="{{ url_for('public.home') }}" class="text-decoration-none text-muted">Inicio</a></li>
+                    <li><a href="{{ url_for('public.catalogo') }}" class="text-decoration-none text-muted">Catálogo</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h6>Contacto</h6>
+                <p class="text-muted small">
+                    Para consultas, contacta al administrador del sitio.
+                </p>
+            </div>
+        </div>
+        <hr class="bg-secondary">
+        <div class="text-center small text-muted">
+            <p>&copy; {{ now.year }} NBF Listados. Todos los derechos reservados.</p>
+        </div>
+    </div>
+</footer>

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}{% if categoria %}Editar{% else %}Nueva{% endif %} Categoría{% endblock %}
+
+{% block content %}
+<div class="container py-4 bg-light min-vh-100">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="fw-bold">
+                <i class="bi bi-tags"></i>
+                {% if categoria %}Editar Categoría{% else %}Nueva Categoría{% endif %}
+            </h1>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <form method="POST" novalidate>
+                        {{ form.hidden_tag() }}
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Nombre *</label>
+                            {% if form.nombre.errors %}
+                            {{ form.nombre(class="form-control is-invalid") }}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.nombre.errors %}{{ error }}<br>{% endfor %}
+                            </div>
+                            {% else %}
+                            {{ form.nombre(class="form-control") }}
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Descripción</label>
+                            {% if form.descripcion.errors %}
+                            {{ form.descripcion(class="form-control is-invalid") }}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.descripcion.errors %}{{ error }}<br>{% endfor %}
+                            </div>
+                            {% else %}
+                            {{ form.descripcion(class="form-control") }}
+                            {% endif %}
+                        </div>
+
+                        <div class="form-check mb-4">
+                            {{ form.activo(class="form-check-input") }}
+                            <label class="form-check-label" for="activo">Activa</label>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            {{ form.submit(class="btn btn-success btn-lg") }}
+                            <a href="{{ url_for('admin.categorias_listado') }}" class="btn btn-outline-secondary">
+                                Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,307 @@
+{% extends "base.html" %}
+
+{% block title %}Productos - Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4 bg-light min-vh-100">
+    <!-- Encabezado -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="fw-bold">
+                        <i class="bi bi-box"></i> Gestión de Productos
+                    </h1>
+                    <p class="text-muted">Edita, crea y elimina productos</p>
+                </div>
+                <a href="{{ url_for('admin.productos_nuevo') }}" class="btn btn-primary btn-lg">
+                    <i class="bi bi-plus-circle"></i> Nuevo Producto
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <form method="GET" class="row g-3">
+                        <!-- Búsqueda -->
+                        <div class="col-md-6 col-lg-3">
+                            <input type="text" name="busqueda" class="form-control"
+                                placeholder="Buscar código o nombre..." value="{{ busqueda or '' }}">
+                        </div>
+
+                        <!-- Categoría -->
+                        <div class="col-md-6 col-lg-3">
+                            <select name="categoria" class="form-select">
+                                <option value="">Todas las Categorías</option>
+                                {% for categoria in categorias %}
+                                <option value="{{ categoria.id_categoria }}" {% if id_categoria==categoria.id_categoria
+                                    %}selected{% endif %}>
+                                    {{ categoria.nombre }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Marca -->
+                        <div class="col-md-6 col-lg-3">
+                            <select name="marca" class="form-select">
+                                <option value="">Todas las Marcas</option>
+                                {% for marca in marcas %}
+                                <option value="{{ marca.id_marca }}" {% if id_marca==marca.id_marca %}selected{% endif
+                                    %}>
+                                    {{ marca.nombre }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Activo -->
+                        <div class="col-md-6 col-lg-3">
+                            <select name="activo" class="form-select">
+                                <option value="">Todos</option>
+                                <option value="true" {% if activo=='true' %}selected{% endif %}>Activos</option>
+                                <option value="false" {% if activo=='false' %}selected{% endif %}>Inactivos</option>
+                            </select>
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-search"></i> Buscar
+                            </button>
+                            <a href="{{ url_for('admin.productos_listado') }}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-clockwise"></i> Limpiar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla de productos - Desktop -->
+    <div class="row d-none d-lg-flex">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Código</th>
+                                <th>Nombre</th>
+                                <th>Categoría</th>
+                                <th>Marca</th>
+                                <th>Precio Docena</th>
+                                <th>Estado</th>
+                                <th>Público</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if productos %}
+                            {% for producto in productos %}
+                            <tr>
+                                <td>
+                                    <code>{{ producto.codigo }}</code>
+                                </td>
+                                <td>
+                                    <strong>{{ producto.nombre }}</strong>
+                                    {% if producto.descripcion %}
+                                    <br><small class="text-muted">{{ producto.descripcion[:50] }}...</small>
+                                    {% endif %}
+                                </td>
+                                <td>{{ producto.categoria.nombre }}</td>
+                                <td>{{ producto.marca.nombre }}</td>
+                                <td>
+                                    <strong>Bs{{ "%.2f"|format(producto.precio_docena_bs) }}</strong>
+                                </td>
+                                <td>
+                                    {% if producto.activo %}
+                                    <span class="badge bg-success">Activo</span>
+                                    {% else %}
+                                    <span class="badge bg-danger">Inactivo</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if producto.visible_catalogo_publico %}
+                                    <i class="bi bi-eye text-primary"></i>
+                                    {% else %}
+                                    <i class="bi bi-eye-slash text-muted"></i>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <a href="{{ url_for('admin.productos_editar', id_producto=producto.id_producto) }}"
+                                            class="btn btn-outline-primary" title="Editar">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal"
+                                            data-bs-target="#deleteModal"
+                                            onclick="setDeleteForm('{{ url_for('admin.productos_eliminar', id_producto=producto.id_producto) }}', '¿Eliminar producto &quot;{{ producto.nombre }}&quot;?')"
+                                            title="Eliminar">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            {% else %}
+                            <tr>
+                                <td colspan="8" class="text-center py-4">
+                                    <p class="text-muted mb-0">No hay productos para mostrar</p>
+                                </td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tarjetas de productos - Mobile -->
+    <div class="row d-lg-none">
+        {% if productos %}
+        {% for producto in productos %}
+        <div class="col-12 mb-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                            <h6 class="card-title mb-1">
+                                <code>{{ producto.codigo }}</code>
+                            </h6>
+                            <p class="card-text fw-bold mb-1">{{ producto.nombre }}</p>
+                            {% if producto.descripcion %}
+                            <small class="text-muted d-block mb-2">{{ producto.descripcion[:60] }}...</small>
+                            {% endif %}
+                        </div>
+                        <div>
+                            {% if producto.activo %}
+                            <span class="badge bg-success">Activo</span>
+                            {% else %}
+                            <span class="badge bg-danger">Inactivo</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row g-2 mb-3 small">
+                        <div class="col-6">
+                            <span class="text-muted d-block">Categoría</span>
+                            <strong>{{ producto.categoria.nombre }}</strong>
+                        </div>
+                        <div class="col-6">
+                            <span class="text-muted d-block">Marca</span>
+                            <strong>{{ producto.marca.nombre }}</strong>
+                        </div>
+                        <div class="col-6">
+                            <span class="text-muted d-block">Precio</span>
+                            <strong>Bs{{ "%.2f"|format(producto.precio_docena_bs) }}</strong>
+                        </div>
+                        <div class="col-6">
+                            <span class="text-muted d-block">Visible</span>
+                            {% if producto.visible_catalogo_publico %}
+                            <i class="bi bi-eye text-primary"></i> Sí
+                            {% else %}
+                            <i class="bi bi-eye-slash text-muted"></i> No
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="btn-group w-100" role="group">
+                        <a href="{{ url_for('admin.productos_editar', id_producto=producto.id_producto) }}"
+                            class="btn btn-outline-primary btn-sm flex-grow-1">
+                            <i class="bi bi-pencil"></i> Editar
+                        </a>
+                        <button type="button" class="btn btn-outline-danger btn-sm flex-grow-1" data-bs-toggle="modal"
+                            data-bs-target="#deleteModal"
+                            onclick="setDeleteForm('{{ url_for('admin.productos_eliminar', id_producto=producto.id_producto) }}', '¿Eliminar producto &quot;{{ producto.nombre }}&quot;?')">
+                            <i class="bi bi-trash"></i> Eliminar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="col-12">
+            <p class="text-center text-muted py-4">No hay productos para mostrar</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Paginación -->
+    {% if paginacion.pages > 1 %}
+    <nav class="mt-4" aria-label="Paginación">
+        <ul class="pagination justify-content-center">
+            {% if paginacion.has_prev %}
+            <li class="page-item">
+                <a class="page-link"
+                    href="{{ url_for('admin.productos_listado', pagina=paginacion.prev_num, busqueda=busqueda or '', categoria=id_categoria or '', marca=id_marca or '', activo=activo or '') }}">
+                    Anterior
+                </a>
+            </li>
+            {% endif %}
+
+            {% for page_num in paginacion.iter_pages() %}
+            {% if page_num %}
+            {% if page_num == paginacion.page %}
+            <li class="page-item active">
+                <span class="page-link">{{ page_num }}</span>
+            </li>
+            {% else %}
+            <li class="page-item">
+                <a class="page-link"
+                    href="{{ url_for('admin.productos_listado', pagina=page_num, busqueda=busqueda or '', categoria=id_categoria or '', marca=id_marca or '', activo=activo or '') }}">
+                    {{ page_num }}
+                </a>
+            </li>
+            {% endif %}
+            {% endif %}
+            {% endfor %}
+
+            {% if paginacion.has_next %}
+            <li class="page-item">
+                <a class="page-link"
+                    href="{{ url_for('admin.productos_listado', pagina=paginacion.next_num, busqueda=busqueda or '', categoria=id_categoria or '', marca=id_marca or '', activo=activo or '') }}">
+                    Siguiente
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+
+<!-- Modal de confirmación -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">Confirmar eliminación</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p id="deleteMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form id="deleteForm" method="POST" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function setDeleteForm(url, message) {
+        document.getElementById('deleteMessage').textContent = message;
+        document.getElementById('deleteForm').action = url;
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Iniciar Sesión - NBF Listados{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center align-items-center min-vh-75">
+        <div class="col-sm-8 col-md-6 col-lg-5">
+            <!-- Tarjeta de login -->
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-5">
+                    <!-- Encabezado -->
+                    <div class="text-center mb-4">
+                        <h2 class="fw-bold">
+                            <i class="bi bi-box-arrow-in-right text-primary"></i>
+                        </h2>
+                        <h3 class="fw-bold">Panel Administrativo</h3>
+                        <p class="text-muted">Inicia sesión para continuar</p>
+                    </div>
+
+                    <!-- Formulario -->
+                    <form method="POST" novalidate>
+                        {{ form.hidden_tag() }}
+
+                        <!-- Email -->
+                        <div class="mb-3">
+                            {% if form.email.errors %}
+                            {{ form.email(class="form-control is-invalid") }}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.email.errors %}
+                                <i class="bi bi-exclamation-circle"></i> {{ error }}<br>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            {{ form.email(class="form-control") }}
+                            {% endif %}
+                            <label for="email" class="form-label mt-2">Email</label>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="mb-4">
+                            {% if form.password.errors %}
+                            {{ form.password(class="form-control is-invalid") }}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.password.errors %}
+                                <i class="bi bi-exclamation-circle"></i> {{ error }}<br>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            {{ form.password(class="form-control") }}
+                            {% endif %}
+                            <label for="password" class="form-label mt-2">Contraseña</label>
+                        </div>
+
+                        <!-- Submit -->
+                        {{ form.submit(class="btn btn-primary btn-lg w-100 mb-3") }}
+                    </form>
+
+                    <!-- Información adicional -->
+                    <hr class="my-4">
+                    <p class="text-muted text-center small mb-0">
+                        <i class="bi bi-info-circle"></i>
+                        Si no tienes credenciales, contacta al administrador.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Volver -->
+            <div class="text-center mt-4">
+                <a href="{{ url_for('public.home') }}" class="text-decoration-none">
+                    <i class="bi bi-arrow-left"></i> Volver al inicio
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .min-vh-75 {
+        min-height: 75vh;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block title %}{{ producto.nombre }} - NBF Listados{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Navegación -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('public.home') }}">Inicio</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('public.catalogo') }}">Catálogo</a></li>
+            <li class="breadcrumb-item active">{{ producto.nombre }}</li>
+        </ol>
+    </nav>
+
+    <!-- Detalle del producto -->
+    <div class="row g-4">
+        <!-- Imagen -->
+        <div class="col-lg-6">
+            <div class="card border-0">
+                <img src="{{ producto.obtener_imagen_url() }}" class="card-img-top" alt="{{ producto.nombre }}"
+                    style="height: 500px; object-fit: cover;">
+            </div>
+        </div>
+
+        <!-- Información -->
+        <div class="col-lg-6">
+            <!-- Título y código -->
+            <h1 class="fw-bold mb-2">{{ producto.nombre }}</h1>
+            <p class="text-muted mb-3">
+                <i class="bi bi-barcode"></i> Código: <strong>{{ producto.codigo }}</strong>
+            </p>
+
+            <!-- Categoría y Marca -->
+            <div class="mb-3">
+                <span class="badge bg-primary">{{ producto.categoria.nombre }}</span>
+                <span class="badge bg-secondary">{{ producto.marca.nombre }}</span>
+                {% if producto.activo %}
+                <span class="badge bg-success">Activo</span>
+                {% else %}
+                <span class="badge bg-danger">Inactivo</span>
+                {% endif %}
+            </div>
+
+            <!-- Descripción -->
+            {% if producto.descripcion %}
+            <p class="lead text-muted mb-4">
+                {{ producto.descripcion }}
+            </p>
+            {% endif %}
+
+            <!-- Precios -->
+            <div class="card bg-light mb-4">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">
+                        <i class="bi bi-tag"></i> Precios
+                    </h5>
+
+                    {% set precios = producto.obtener_precios_visibles() %}
+                    {% if precios %}
+                    <div class="row g-3">
+                        {% if 'paquete' in precios %}
+                        <div class="col-12">
+                            <div class="border-start border-success ps-3">
+                                <h6 class="mb-1">Paquete</h6>
+                                <p class="mb-1"><strong>{{ precios.paquete.unidades }} unidades</strong></p>
+                                <p class="mb-0 display-6 text-success fw-bold">
+                                    Bs{{ "%.2f"|format(precios.paquete.precio) }}
+                                </p>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if 'docena' in precios %}
+                        <div class="col-12">
+                            <div class="border-start border-info ps-3">
+                                <h6 class="mb-1">Docena</h6>
+                                <p class="mb-1"><strong>{{ precios.docena.unidades }} unidades</strong></p>
+                                <p class="mb-0 display-6 text-info fw-bold">
+                                    Bs{{ "%.2f"|format(precios.docena.precio) }}
+                                </p>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if 'caja' in precios %}
+                        <div class="col-12">
+                            <div class="border-start border-warning ps-3">
+                                <h6 class="mb-1">Caja</h6>
+                                <p class="mb-1"><strong>{{ precios.caja.unidades }} unidades</strong></p>
+                                <p class="mb-0 display-6 text-warning fw-bold">
+                                    Bs{{ "%.2f"|format(precios.caja.precio) }}
+                                </p>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info mb-0">
+                        <i class="bi bi-info-circle"></i>
+                        Los precios no están disponibles en este momento. Por favor, contacta para más información.
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Información adicional -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h6 class="card-title">Creado</h6>
+                            <p class="mb-0 text-muted small">
+                                {{ producto.fecha_creacion.strftime('%d/%m/%Y') }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h6 class="card-title">Actualizado</h6>
+                            <p class="mb-0 text-muted small">
+                                {{ producto.fecha_actualizacion.strftime('%d/%m/%Y') }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Acciones -->
+            <div class="d-grid gap-2">
+                <a href="{{ url_for('public.catalogo') }}" class="btn btn-outline-primary btn-lg">
+                    <i class="bi bi-arrow-left"></i> Volver al Catálogo
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Productos relacionados -->
+    {% if relacionados %}
+    <section class="mt-5 pt-5 border-top">
+        <h3 class="fw-bold mb-4">Productos Relacionados</h3>
+        <div class="row g-4">
+            {% for prod in relacionados %}
+            <div class="col-sm-6 col-lg-3">
+                <div class="card h-100 card-hover">
+                    <img src="{{ prod.obtener_imagen_url() }}" class="card-img-top" alt="{{ prod.nombre }}"
+                        style="height: 150px; object-fit: cover;">
+                    <div class="card-body">
+                        <h6 class="card-title">{{ prod.nombre }}</h6>
+                        <p class="text-muted small">{{ prod.codigo }}</p>
+                        <a href="{{ url_for('public.detalle_producto', id_producto=prod.id_producto) }}"
+                            class="btn btn-sm btn-outline-primary">
+                            Ver <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+</div>
+{% endblock %}

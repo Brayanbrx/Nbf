@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard Admin - NBF Listados{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4 bg-light">
+    <!-- Encabezado -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="fw-bold">
+                        <i class="bi bi-speedometer2"></i> Panel Administrativo
+                    </h1>
+                    <p class="text-muted">Bienvenido, {{ current_user.nombre }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estadísticas -->
+    <div class="row g-4 mb-4">
+        <!-- Productos -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card border-0 shadow-sm border-start border-primary border-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="text-muted mb-1">Productos</h6>
+                            <h2 class="fw-bold mb-0">{{ stats.total_productos }}</h2>
+                        </div>
+                        <i class="bi bi-box display-4 text-primary opacity-50"></i>
+                    </div>
+                    <a href="{{ url_for('admin.productos_listado') }}" class="btn btn-sm btn-primary mt-3">
+                        Gestionar <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Categorías -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card border-0 shadow-sm border-start border-success border-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="text-muted mb-1">Categorías</h6>
+                            <h2 class="fw-bold mb-0">{{ stats.categorias }}</h2>
+                        </div>
+                        <i class="bi bi-tags display-4 text-success opacity-50"></i>
+                    </div>
+                    <a href="{{ url_for('admin.categorias_listado') }}" class="btn btn-sm btn-success mt-3">
+                        Gestionar <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Marcas -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card border-0 shadow-sm border-start border-info border-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="text-muted mb-1">Marcas</h6>
+                            <h2 class="fw-bold mb-0">{{ stats.marcas }}</h2>
+                        </div>
+                        <i class="bi bi-shop display-4 text-info opacity-50"></i>
+                    </div>
+                    <a href="{{ url_for('admin.marcas_listado') }}" class="btn btn-sm btn-info mt-3">
+                        Gestionar <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Panel de acciones rápidas -->
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold">
+                        <i class="bi bi-lightning"></i> Acciones Rápidas
+                    </h5>
+                    <div class="d-grid gap-2 mt-3">
+                        <a href="{{ url_for('admin.productos_nuevo') }}" class="btn btn-outline-primary">
+                            <i class="bi bi-plus-circle"></i> Nuevo Producto
+                        </a>
+                        <a href="{{ url_for('admin.categorias_nueva') }}" class="btn btn-outline-success">
+                            <i class="bi bi-plus-circle"></i> Nueva Categoría
+                        </a>
+                        <a href="{{ url_for('admin.marcas_nueva') }}" class="btn btn-outline-info">
+                            <i class="bi bi-plus-circle"></i> Nueva Marca
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold">
+                        <i class="bi bi-info-circle"></i> Información
+                    </h5>
+                    <p class="text-muted mb-3">
+                        Desde este panel puedes gestionar todos los productos, categorías y marcas del catálogo.
+                    </p>
+                    <ul class="list-unstyled small">
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle text-success"></i>
+                            Crear, editar y eliminar productos
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle text-success"></i>
+                            Controlar visibilidad en catálogo público
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle text-success"></i>
+                            Administrar precios y categorías
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Menú lateral oculto en navegación -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm bg-light">
+                <div class="card-body text-center py-4">
+                    <p class="text-muted mb-0">
+                        <i class="bi bi-shield-lock"></i>
+                        Sesión segura.
+                        <a href="{{ url_for('auth.logout') }}" class="text-danger">Cerrar sesión</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

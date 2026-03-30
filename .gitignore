@@ -1,0 +1,49 @@
+# Ignorar archivos locales
+.env
+.env.local
+*.pyc
+__pycache__/
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Flask
+instance/
+.webassets-cache
+
+# Base de datos
+*.db
+*.sqlite
+*.sqlite3
+
+# Migraciones (opcional, descomenta si quieres versionarlas)
+# migrations/versions/
+
+# Node (si usas frontend build tools)
+node_modules/
+npm-debug.log
+
+# Logs
+*.log
+
+# Compilados
+dist/
+build/
+
+# Secrets
+secrets.json
+.secrets
+
+# Otros
+.env.*
+!.env.example
+*.pem

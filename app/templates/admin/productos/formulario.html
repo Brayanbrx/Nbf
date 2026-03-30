@@ -1,0 +1,238 @@
+{% extends "base.html" %}
+
+{% block title %}{% if producto %}Editar{% else %}Crear{% endif %} Producto{% endblock %}
+
+{% block content %}
+<div class="container py-4 bg-light min-vh-100">
+    <!-- Encabezado -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="fw-bold">
+                <i class="bi bi-box"></i>
+                {% if producto %}Editar Producto{% else %}Crear Nuevo Producto{% endif %}
+            </h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-3 p-md-4">
+                    <!-- Formulario -->
+                    <form method="POST" novalidate>
+                        {{ form.hidden_tag() }}
+
+                        <!-- Sección básica -->
+                        <h5 class="fw-bold mb-3 pb-3 border-bottom">Información Básica</h5>
+
+                        <div class="row g-2 g-md-3 mb-3">
+                            <div class="col-12 col-md-6">
+                                <label class="form-label fw-bold">Código *</label>
+                                {% if form.codigo.errors %}
+                                {{ form.codigo(class="form-control is-invalid") }}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.codigo.errors %}{{ error }}<br>{% endfor %}
+                                </div>
+                                {% else %}
+                                {{ form.codigo(class="form-control") }}
+                                {% endif %}
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <label class="form-label fw-bold">Nombre *</label>
+                                {% if form.nombre.errors %}
+                                {{ form.nombre(class="form-control is-invalid") }}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.nombre.errors %}{{ error }}<br>{% endfor %}
+                                </div>
+                                {% else %}
+                                {{ form.nombre(class="form-control") }}
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Descripción -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Descripción</label>
+                            {% if form.descripcion.errors %}
+                            {{ form.descripcion(class="form-control is-invalid") }}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.descripcion.errors %}{{ error }}<br>{% endfor %}
+                            </div>
+                            {% else %}
+                            {{ form.descripcion(class="form-control") }}
+                            {% endif %}
+                        </div>
+
+                        <!-- Imagen -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">URL de Imagen</label>
+                            {% if form.url_imagen.errors %}
+                            {{ form.url_imagen(class="form-control is-invalid") }}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.url_imagen.errors %}{{ error }}<br>{% endfor %}
+                            </div>
+                            {% else %}
+                            {{ form.url_imagen(class="form-control") }}
+                            {% endif %}
+                            <small class="text-muted d-block mt-1">Ej: https://ejemplo.com/imagen.jpg</small>
+                        </div>
+
+                        <!-- Categoría y Marca -->
+                        <div class="row g-2 g-md-3 mb-3">
+                            <div class="col-12 col-md-6">
+                                <label class="form-label fw-bold">Categoría *</label>
+                                {% if form.id_categoria.errors %}
+                                {{ form.id_categoria(class="form-select is-invalid") }}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.id_categoria.errors %}{{ error }}<br>{% endfor %}
+                                </div>
+                                {% else %}
+                                {{ form.id_categoria(class="form-select") }}
+                                {% endif %}
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <label class="form-label fw-bold">Marca *</label>
+                                {% if form.id_marca.errors %}
+                                {{ form.id_marca(class="form-select is-invalid") }}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.id_marca.errors %}{{ error }}<br>{% endfor %}
+                                </div>
+                                {% else %}
+                                {{ form.id_marca(class="form-select") }}
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Sección de precios -->
+                        <h5 class="fw-bold mb-3 pb-3 border-bottom mt-4">Precios (Bs)</h5>
+
+                        <div class="row g-2 g-md-3 mb-3">
+                            <div class="col-12 col-md-6">
+                                <label class="form-label fw-bold">Precio Paquete</label>
+                                {{ form.precio_paquete_bs(class="form-control") }}
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label class="form-label fw-bold">Precio Docena</label>
+                                {{ form.precio_docena_bs(class="form-control") }}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Precio Caja</label>
+                            {{ form.precio_caja_bs(class="form-control") }}
+                        </div>
+
+                        <!-- Sección de unidades -->
+                        <h5 class="fw-bold mb-3 pb-3 border-bottom mt-4">Cantidad de Unidades</h5>
+
+                        <div class="row g-2 g-md-3 mb-3">
+                            <div class="col-12 col-md-6">
+                                <label class="form-label fw-bold">Unidades por Paquete</label>
+                                {{ form.unidades_por_paquete(class="form-control") }}
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label class="form-label fw-bold">Unidades por Docena</label>
+                                {{ form.unidades_por_docena(class="form-control") }}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Unidades por Caja *</label>
+                            {% if form.unidades_por_caja.errors %}
+                            {{ form.unidades_por_caja(class="form-control is-invalid") }}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.unidades_por_caja.errors %}{{ error }}<br>{% endfor %}
+                            </div>
+                            {% else %}
+                            {{ form.unidades_por_caja(class="form-control") }}
+                            {% endif %}
+                        </div>
+
+                        <!-- Sección de visibilidad y opciones -->
+                        <h5 class="fw-bold mb-3 pb-3 border-bottom mt-4">Opciones de Visibilidad</h5>
+
+                        <div class="form-check mb-2">
+                            {{ form.activo(class="form-check-input") }}
+                            <label class="form-check-label" for="activo">
+                                Activo
+                            </label>
+                        </div>
+
+                        <div class="form-check mb-2">
+                            {{ form.visible_catalogo_publico(class="form-check-input") }}
+                            <label class="form-check-label" for="visible_catalogo_publico">
+                                Visible en Catálogo Público
+                            </label>
+                        </div>
+
+                        <!-- Qué precios mostrar -->
+                        <h5 class="fw-bold mb-3 pb-3 border-bottom mt-4">Mostrar en Catálogo Público</h5>
+
+                        <div class="form-check mb-2">
+                            {{ form.mostrar_precio_paquete(class="form-check-input") }}
+                            <label class="form-check-label" for="mostrar_precio_paquete">
+                                Mostrar Precio Paquete
+                            </label>
+                        </div>
+
+                        <div class="form-check mb-2">
+                            {{ form.mostrar_precio_docena(class="form-check-input") }}
+                            <label class="form-check-label" for="mostrar_precio_docena">
+                                Mostrar Precio Docena
+                            </label>
+                        </div>
+
+                        <div class="form-check mb-4">
+                            {{ form.mostrar_precio_caja(class="form-check-input") }}
+                            <label class="form-check-label" for="mostrar_precio_caja">
+                                Mostrar Precio Caja
+                            </label>
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="d-grid gap-2 mt-4 pt-3 border-top">
+                            {{ form.submit(class="btn btn-primary btn-lg") }}
+                            <a href="{{ url_for('admin.productos_listado') }}" class="btn btn-outline-secondary">
+                                Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información lateral -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-3">
+                        <i class="bi bi-info-circle"></i> Ayuda
+                    </h6>
+                    <p class="small text-muted mb-2">
+                        <strong>Código:</strong> Identificador único del producto (ej: PROD-001)
+                    </p>
+                    <p class="small text-muted mb-2">
+                        <strong>Precios:</strong> En Bolivianos. Opcional si no vende por esa unidad.
+                    </p>
+                    <p class="small text-muted">
+                        <strong>Visibilidad:</strong> Controla qué ve el público en el catálogo.
+                    </p>
+                </div>
+            </div>
+
+            {% if producto %}
+            <div class="card border-0 shadow-sm bg-light">
+                <div class="card-body text-center">
+                    <small class="text-muted d-block">Producto creado:</small>
+                    <small class="d-block mb-2">{{ producto.fecha_creacion.strftime('%d/%m/%Y') }}</small>
+                    <small class="text-muted d-block">Actualizado:</small>
+                    <small class="d-block">{{ producto.fecha_actualizacion.strftime('%d/%m/%Y') }}</small>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
