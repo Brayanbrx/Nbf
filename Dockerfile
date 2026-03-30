@@ -9,9 +9,10 @@ RUN apt-get update && apt-get install -y \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-# Añadir repositorio de Microsoft
-RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - && \
-    curl https://packages.microsoft.com/config/debian/11/prod.list > /etc/apt/sources.list.d/mssql-release.list
+# Añadir repositorio de Microsoft (método moderno para Debian 13)
+RUN mkdir -p /etc/apt/trusted.gpg.d && \
+    curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > /etc/apt/trusted.gpg.d/microsoft.gpg && \
+    curl https://packages.microsoft.com/config/debian/12/prod.list > /etc/apt/sources.list.d/mssql-release.list
 
 # Instalar ODBC driver para SQL Server
 RUN apt-get update && ACCEPT_EULA=Y apt-get install -y \
