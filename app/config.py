@@ -93,7 +93,8 @@ class ProductionConfig(BaseConfig):
         SQLALCHEMY_DATABASE_URI = database_url
     else:
         # Fallback a construcción manual
-        db_driver = os.getenv('DB_DRIVER', 'ODBC Driver 18 for SQL Server')
+        # En producción (Render con FreeTDS), usar FreeTDS como driver por defecto
+        db_driver = os.getenv('DB_DRIVER', 'FreeTDS')
         db_server = os.getenv('DB_SERVER')
         db_port = os.getenv('DB_PORT', '1433')
         db_name = os.getenv('DB_NAME')
