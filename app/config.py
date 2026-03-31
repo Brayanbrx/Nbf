@@ -73,6 +73,7 @@ class DevelopmentConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = (
         f"mssql+pymssql://{db_user}:{quoted_password}@{db_server}:{db_port}/{db_name}"
     )
+    print(f"[DEV] Conectando a: {db_server}:{db_port}/{db_name} como {db_user}")
 
 
 class ProductionConfig(BaseConfig):
@@ -101,9 +102,16 @@ class ProductionConfig(BaseConfig):
             SQLALCHEMY_DATABASE_URI = (
                 f"mssql+pymssql://{db_user}:{quoted_password}@{db_server}:{db_port}/{db_name}"
             )
+            print(f"[PROD] Conectando a: {db_server}:{db_port}/{db_name} como {db_user}")
         else:
+            missing = []
+            if not db_server: missing.append("DB_SERVER")
+            if not db_name: missing.append("DB_NAME")
+            if not db_user: missing.append("DB_USER")
+            if not db_password: missing.append("DB_PASSWORD")
             raise ValueError(
-                "Producción: Necesitas DATABASE_URL o las variables de BD (DB_SERVER, DB_NAME, etc.)"
+                f"Producción: Faltan variables de BD: {', '.join(missing)}. "
+                f"Configúralas en el Dashboard de Render (Environment variables)."
             )
 
 

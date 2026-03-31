@@ -6,12 +6,21 @@ Ejecutar con: python run.py
 
 import os
 import sys
+import logging
 from app import create_app, db
 from app.models import Usuario, Categoria, Marca, Producto
 from flask_migrate import Migrate
 
+# Configurar logging a nivel INFO para ver mensajes de inicio
+logging.basicConfig(level=logging.INFO)
+
 # Crear la aplicación
-app = create_app(os.getenv('FLASK_ENV', 'development'))
+try:
+    app = create_app(os.getenv('FLASK_ENV', 'development'))
+    print(f"✅ Aplicación creada exitosamente en modo: {os.getenv('FLASK_ENV', 'development')}")
+except Exception as e:
+    print(f"❌ ERROR al crear la aplicación: {e}", file=sys.stderr)
+    sys.exit(1)
 
 # Configurar migraciones
 migrate = Migrate(app, db)

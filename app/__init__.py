@@ -48,9 +48,14 @@ def create_app(environment='development'):
             'Producto': Producto,
         }
     
-    # Crear tablas si no existen (solo desarrollo)
+    # Crear tablas si no existen
     with app.app_context():
-        db.create_all()
+        try:
+            db.create_all()
+            app.logger.info("✅ Tablas de BD creadas/verificadas correctamente")
+        except Exception as e:
+            app.logger.error(f"❌ Error al crear tablas: {str(e)}")
+            raise  # Re-raise para que Render vea el error
     
     # Registrar blueprints (módulos de rutas)
     register_blueprints(app)
