@@ -49,10 +49,8 @@ class BaseConfig:
     SQLALCHEMY_ENGINE_OPTIONS = {
         'pool_recycle': 3600,  # Reciclar conexiones cada 1 hora
         'pool_pre_ping': True,  # Verificar conexión antes de usar
-        'connect_args': {
-            'timeout': 20,
-            'check_same_thread': False,
-        }
+        # connect_args vacío para pymssql (no acepta check_same_thread ni timeout)
+        'connect_args': {}
     }
 
 
