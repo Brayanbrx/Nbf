@@ -1,18 +1,9 @@
 FROM python:3.12-slim
 
-# Instalar dependencias del sistema para SQL Server con FreeTDS
+# Instalar solo dependencias essenciales (pymssql es pure Python, no requiere ODBC)
 RUN apt-get update && apt-get install -y \
-    freetds-dev \
-    unixodbc-dev \
-    unixodbc \
     --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
-
-# Configurar ODBC para FreeTDS
-RUN echo "[FreeTDS]\n\
-Description = FreeTDS Driver\n\
-Driver = /usr/lib/x86_64-linux-gnu/odbc/libtdsodbc.so\n\
-Setup = /usr/lib/x86_64-linux-gnu/odbc/libtdsS.so" > /etc/odbcinst.ini
 
 # Configurar directorio de trabajo
 WORKDIR /app

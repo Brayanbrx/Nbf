@@ -64,18 +64,16 @@ class DevelopmentConfig(BaseConfig):
     SQLALCHEMY_ECHO = False
     
     # Construir URL de BD desde variables de entorno
-    db_driver = os.getenv('DB_DRIVER', 'ODBC Driver 17 for SQL Server')
     db_server = os.getenv('DB_SERVER', 'localhost')
     db_port = os.getenv('DB_PORT', '1433')
     db_name = os.getenv('DB_NAME', 'NBF_Listados')
     db_user = os.getenv('DB_USER', 'sa')
     db_password = os.getenv('DB_PASSWORD', '')
     
-    # Construcción de URI de SQLAlchemy para SQL Server con pyodbc
+    # Construcción de URI de SQLAlchemy para SQL Server con pymssql (sin ODBC)
     quoted_password = db_password.replace('@', '%40').replace(';', '%3B')
     SQLALCHEMY_DATABASE_URI = (
-        f"mssql+pyodbc://{db_user}:{quoted_password}@{db_server}:{db_port}/{db_name}"
-        f"?driver={db_driver.replace(' ', '+')}"
+        f"mssql+pymssql://{db_user}:{quoted_password}@{db_server}:{db_port}/{db_name}"
     )
 
 
@@ -93,8 +91,7 @@ class ProductionConfig(BaseConfig):
         SQLALCHEMY_DATABASE_URI = database_url
     else:
         # Fallback a construcción manual
-        # En producción (Render), FORZAR FreeTDS (no usar DB_DRIVER del env)
-        db_driver = 'FreeTDS'  # Hardcoded para Render/Docker
+        # En producción (Render), usar pymssql (sin dependencias ODBC)
         db_server = os.getenv('DB_SERVER')
         db_port = os.getenv('DB_PORT', '1433')
         db_name = os.getenv('DB_NAME')
@@ -104,8 +101,7 @@ class ProductionConfig(BaseConfig):
         if db_server and db_name and db_user and db_password:
             quoted_password = db_password.replace('@', '%40').replace(';', '%3B')
             SQLALCHEMY_DATABASE_URI = (
-                f"mssql+pyodbc://{db_user}:{quoted_password}@{db_server}:{db_port}/{db_name}"
-                f"?driver={db_driver.replace(' ', '+')}&TrustServerCertificate=yes&Encrypt=yes"
+                f"mssql+pymssql://{db_user}:{quoted_password}@{db_server}:{db_port}/{db_name}"
             )
         else:
             raise ValueError(

@@ -12,8 +12,6 @@ services:
         value: production
       - key: SECRET_KEY
         generateValue: true
-      - key: DB_DRIVER
-        value: "FreeTDS"
       - key: DB_PORT
         value: "1433"
 
