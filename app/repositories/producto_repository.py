@@ -4,7 +4,8 @@ Capa de acceso a datos con búsqueda y filtros.
 """
 
 from app.models import Producto
-from sqlalchemy import and_
+from sqlalchemy import and_, or_
+from sqlalchemy.orm import joinedload
 
 
 class ProductoRepository:
@@ -14,8 +15,11 @@ class ProductoRepository:
         self.db = db
     
     def obtener_por_id(self, id_producto):
-        """Obtener producto por ID."""
-        return Producto.query.get(id_producto)
+        """Obtener producto por ID con relaciones eager loaded."""
+        return Producto.query.options(
+            joinedload(Producto.categoria),
+            joinedload(Producto.marca)
+        ).get(id_producto)
     
     def obtener_por_codigo(self, codigo):
         """Obtener producto por código."""
@@ -30,8 +34,11 @@ class ProductoRepository:
         return Producto.query.filter_by(activo=True).order_by(Producto.nombre).all()
     
     def obtener_publicos(self):
-        """Obtener productos visibles en catálogo público."""
-        return Producto.query.filter(
+        """Obtener productos visibles en catálogo público con relaciones eager loaded."""
+        return Producto.query.options(
+            joinedload(Producto.categoria),
+            joinedload(Producto.marca)
+        ).filter(
             and_(
                 Producto.activo == True,
                 Producto.visible_catalogo_publico == True
@@ -54,7 +61,10 @@ class ProductoRepository:
         Returns:
             Paginator de Flask-SQLAlchemy
         """
-        query = Producto.query.filter(
+        query = Producto.query.options(
+            joinedload(Producto.categoria),
+            joinedload(Producto.marca)
+        ).filter(
             and_(
                 Producto.activo == True,
                 Producto.visible_catalogo_publico == True
@@ -104,7 +114,10 @@ class ProductoRepository:
         Returns:
             Paginator de Flask-SQLAlchemy
         """
-        query = Producto.query
+        query = Producto.query.options(
+            joinedload(Producto.categoria),
+            joinedload(Producto.marca)
+        )
         
         if filtros:
             # Búsqueda
